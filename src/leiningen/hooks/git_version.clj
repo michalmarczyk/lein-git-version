@@ -36,7 +36,9 @@
         (println git-version)))
     (apply task project args)))
 
-(doseq [task [#'leiningen.jar/jar #'leiningen.uberjar/uberjar]
+(doseq [task (keep resolve '[leiningen.jar/jar
+                             leiningen.uberjar/uberjar
+                             leiningen.deploy/deploy])
         hook [add-git-version-hook
               replace-artifact-names-hook]]
   (add-hook task hook))
