@@ -25,6 +25,13 @@
              :uberjar-name (str artifact-base-name "-standalone.jar"))
            args)))
 
+(defn replace-version-hook [task project & args]
+  (let [version (project ::git-version)]
+    (apply task
+           (assoc project
+             :version version)
+           args)))
+
 (defn write-version-file-hook [task project & args]
   (let [git-version (project ::git-version)
         version-file (->> [(project :resources-path) "version.txt"]
@@ -36,11 +43,12 @@
         (println git-version)))
     (apply task project args)))
 
-(doseq [task (keep resolve '[leiningen.jar/jar
-                             leiningen.uberjar/uberjar
-                             leiningen.deploy/deploy])
+(doseq [task (map resolve '[leiningen.jar/jar
+                            leiningen.uberjar/uberjar
+                            leiningen.pom/pom])
         hook [add-git-version-hook
-              replace-artifact-names-hook]]
+              replace-artifact-names-hook
+              replace-version-hook]]
   (add-hook task hook))
 
 (add-hook #'leiningen.jar/jar write-version-file-hook)
