@@ -27,16 +27,22 @@
 (defn replace-artifact-names-hook [task project & args]
   (let [artifact-base-name (str (project :name) "-" (project ::git-version))]
     (apply task
-           (assoc project
-             :jar-name (str artifact-base-name ".jar")
-             :uberjar-name (str artifact-base-name "-standalone.jar"))
+           (vary-meta (assoc project
+                        :jar-name (str artifact-base-name ".jar")
+                        :uberjar-name (str artifact-base-name "-standalone.jar"))
+                      update-in [:without-profiles]
+                      assoc
+                      :jar-name (str artifact-base-name ".jar")
+                      :uberjar-name (str artifact-base-name "-standalone.jar"))
            args)))
 
 (defn replace-version-hook [task project & args]
   (let [version (project ::git-version)]
     (apply task
-           (assoc project
-             :version version)
+           (vary-meta (assoc project
+                        :version version)
+                      update-in [:without-profiles]
+                      assoc :version version)
            args)))
 
 (defn write-version-file-hook [task project & args]
