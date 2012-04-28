@@ -1,10 +1,17 @@
 (ns leiningen.hooks.git-version
   (:use [robert.hooke :only [add-hook]]
-        [leiningen.core :only [abort]]
         [clojure.java.shell :only [sh with-sh-dir]])
   (:require [clojure.string :as str]
             [clojure.java.io :as io]
             [leiningen jar uberjar]))
+
+(try
+  (use '[leiningen.core :only [abort]])
+  (catch Exception e
+    (if (or (instance? java.io.FileNotFoundException e)
+            (instance? java.io.FileNotFoundException (.getCause ^Exception e)))
+      (use '[leiningen.core.main :only [abort]])
+      (throw e))))
 
 (defn add-git-version-hook [task project & args]
   (try
