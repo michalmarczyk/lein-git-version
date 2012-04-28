@@ -41,13 +41,17 @@
 
 (defn write-version-file-hook [task project & args]
   (let [git-version (project ::git-version)
-        version-file (->> [(project :resources-path) "version.txt"]
+        ;; TODO: a separate defproject key?
+        version-file (->> [(or (project :resources-path)
+                               (last (project :resource-paths)))
+                           "version.txt"]
                           (str/join java.io.File/separatorChar)
                           io/file)]
     (.mkdirs (.getParentFile version-file))
     (with-open [w (io/writer version-file)]
       (binding [*out* w]
         (println git-version)))
+    (println "Created" (.getCanonicalPath version-file))
     (apply task project args)))
 
 (doseq [task (map resolve '[leiningen.jar/jar
