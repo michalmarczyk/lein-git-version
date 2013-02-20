@@ -70,3 +70,5 @@
 
 (defn activate []
  (add-hook #'leiningen.jar/jar write-version-file-hook))
+
+(add-hook #'leiningen.jar/jar write-version-file-hook)
