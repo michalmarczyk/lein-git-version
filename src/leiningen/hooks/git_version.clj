@@ -60,15 +60,14 @@
     (println "Created" (.getCanonicalPath version-file))
     (apply task project args)))
 
-(doseq [task (map resolve '[leiningen.jar/jar
-                            leiningen.uberjar/uberjar
-                            leiningen.pom/pom])
-        hook [add-git-version-hook
-              replace-artifact-names-hook
-              replace-version-hook]]
-  (add-hook task hook))
-
 (defn activate []
- (add-hook #'leiningen.jar/jar write-version-file-hook))
+  (doseq [task (map resolve '[leiningen.jar/jar
+                              leiningen.uberjar/uberjar
+                              leiningen.pom/pom])
+          hook [write-version-file-hook
+                add-git-version-hook
+                replace-artifact-names-hook
+                replace-version-hook]]
+    (add-hook task hook)))
 
-(add-hook #'leiningen.jar/jar write-version-file-hook)
+(activate)
