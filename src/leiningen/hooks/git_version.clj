@@ -3,7 +3,7 @@
         [clojure.java.shell :only [sh with-sh-dir]])
   (:require [clojure.string :as str]
             [clojure.java.io :as io]
-            [leiningen jar uberjar deploy]))
+            [leiningen jar uberjar deploy install]))
 
 (try
   (use '[leiningen.core :only [abort]])
@@ -63,7 +63,9 @@
 (doseq [task (map resolve '[leiningen.jar/jar
                             leiningen.uberjar/uberjar
                             leiningen.pom/pom
-                            leiningen.deploy/deploy])
+                            leiningen.deploy/deploy
+                            leiningen.install/install
+                            ])
         hook [add-git-version-hook
               replace-artifact-names-hook
               replace-version-hook]]
