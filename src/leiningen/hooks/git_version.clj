@@ -20,7 +20,7 @@
             (sh "git" "describe" "--tags"))]
       (if-not (zero? exit)
         (abort "git describe --tags has failed")
-        (apply task (assoc project ::git-version (str/trimr out)) args)))
+        (apply task (assoc project ::git-version (-> out str/trim-newline str/trimr)) args)))
     (catch java.io.IOException e
       (abort "Could not run git describe --tags"))))
 
